@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
-import { useClerk, useUser, UserButton } from "@clerk/react";
+import Modal from "./Modal";
+import LoginModal from "./LoginModal";
 
 const BookIcon = () => (
   <svg
@@ -33,9 +34,18 @@ const Navbar = () => {
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { openSignIn } = useClerk();
-  const { user } = useUser();
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+
+  // Clerk Start
+  // const { openSignIn } = useClerk();
+  // const { user } = useUser();
+  // // Clerk End
+
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -92,7 +102,21 @@ const Navbar = () => {
           alt="search"
           className={`${isScrolled && "invert"} h-7 transition-all duration-500`}
         />
+         <button
+            onClick={openModal}
+            className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
+          >
+            Login
+          </button>
+          <Modal isOpen={isModalOpen} onClose={closeModal}>
+            <LoginModal />
+          </Modal>
+ 
 
+
+
+
+{/* 
         {user ? (
           <UserButton>
             <UserButton.MenuItems>
@@ -105,16 +129,17 @@ const Navbar = () => {
           </UserButton>
         ) : (
           <button
-            onClick={openSignIn}
+            onClick={Login}  // Clerk
             className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
           >
             Login
           </button>
-        )}
+        )} */}
       </div>
 
       {/* Mobile Menu Button */}
       <div className="flex items-center gap-3 md:hidden">
+{/* 
         {user && (
           <UserButton>
             <UserButton.MenuItems>
@@ -126,7 +151,7 @@ const Navbar = () => {
             </UserButton.MenuItems>
           </UserButton>
         )}
-
+ */}
         <img
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           src={assets.menuIcon}
@@ -148,7 +173,7 @@ const Navbar = () => {
             {link.name}
           </a>
         ))}
-
+{/* 
         {user && (
           <button
             className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all"
@@ -166,6 +191,7 @@ const Navbar = () => {
             Login
           </button>
         )}
+ */}
       </div>
     </nav>
   );
