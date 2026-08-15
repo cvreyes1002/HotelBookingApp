@@ -1,14 +1,31 @@
-import Navbar from './components/Navbar'
-import { useLocation } from 'react-router-dom'
+import Navbar from "./components/Navbar";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
+import { AuthProvider } from "./components/AuthContext";
+
+const Logout = () => {
+  localStorage.clear();
+  return <Navigate to="/" />;
+};
 
 const App = () => {
-  const isOwnerPath = useLocation().pathname.includes("owner")
+  const isOwnerPath = useLocation().pathname.includes("owner");
 
   return (
     <div>
-      {!isOwnerPath && <Navbar />}
+      <AuthProvider>
+        {!isOwnerPath && <Navbar />}
+      <div className="min-h-[70vh]">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+      </AuthProvider>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

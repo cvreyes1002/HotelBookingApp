@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 import LoginModal from "./LoginModal";
+import { useAuth } from "../components/AuthContext";
 
 const Navbar = () => {
   const navLinks = [
@@ -15,6 +16,8 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false); // State to manage the login modal visibility
 
+  const { user } = useAuth();
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -23,10 +26,12 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // console.log("User is authenticated:", !!user);
+
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 bg-indigo-500 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${isScrolled ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4" : "py-4 md:py-6"}`}
+        className={`fixed top-0 left-0 w-full flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32 transition-all duration-500 z-50 ${isScrolled ? "bg-white/80 shadow-md text-gray-700 backdrop-blur-lg py-3 md:py-4" : "py-4 md:py-6"}`}
       >
         {/* Logo */}
         <Link to="/">
@@ -65,12 +70,22 @@ const Navbar = () => {
             alt="search"
             className={`${isScrolled && "invert"} h-7 transition-all duration-500`}
           />
-          <button
+
+          { !!user ?
+          (<button
+            onClick={() => setIsLoginOpen(true)} // Open the login modal on click
+            className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
+          >
+            Profile
+          </button>)
+          :
+          (<button
             onClick={() => setIsLoginOpen(true)} // Open the login modal on click
             className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
           >
             Login
-          </button>
+          </button>)
+          }
         </div>
 
         {/* Mobile Menu Button */}

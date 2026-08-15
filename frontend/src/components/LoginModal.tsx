@@ -1,3 +1,9 @@
+import { useState } from "react";
+import api from "../api";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+
+import LoadingIndicator from "./LoadingIndicator";
+
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -6,9 +12,38 @@ interface LoginModalProps {
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   if (!isOpen) return null;  // If the modal isn't open, render nothing
 
+  const [loading, setLoading] = useState(false);
+  
+  const handleSubmit = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    console.log("Email:", email);
+    console.log("Password:", password);
+
+    try {
+      const response = await api.post("/api/token/", { email, password });
+      
+      console.log("Login successful:", response.data);
+
+      localStorage.setItem(ACCESS_TOKEN, response.data.access);
+      localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+      onClose();  // Close the modal after successful login
+
+    } catch (error) {
+      console.error("Error during login:", error);
+      // Handle login error (e.g., show error message)
+
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100]">
-      <form className="relative bg-white text-gray-500 max-w-[350px] w-full mx-4 md:p-6 p-4 text-left text-sm rounded-xl shadow-[0px_0px_10px_0px] shadow-black/10">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-100">
+      <form onSubmit={handleSubmit} className="relative bg-white text-gray-500 max-w-87.5 w-full mx-4 md:p-6 p-4 text-left text-sm rounded-xl shadow-[0px_0px_10px_0px] shadow-black/10">
 
         {/* Close Button */}
         <button
@@ -36,6 +71,9 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
           <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
             Login Now
           </h2>
+
+          {loading && <LoadingIndicator />}
+
           <input
             id="email"
             className="w-full border my-3 border-gray-500/30 outline-none rounded-full py-2.5 px-4"
