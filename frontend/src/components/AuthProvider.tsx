@@ -15,10 +15,10 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  token: string | null;
-  loading: boolean;
-  isAuthorized: boolean;
-  error: string | null; // Added to track server errors
+  // token: string | null;
+  // loading: boolean;
+  isAuthorized: boolean | null;
+  // error: string | null; // Added to track server errors
   login: (email: string, password: string) => Promise<void>; // Accepts credentials now
   logout: () => void;
 }
@@ -26,7 +26,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
  
@@ -46,8 +46,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       } else {
         setIsAuthorized(false);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.detail || "Token refresh failed";
+      setError(errorMessage);
       setIsAuthorized(false);
     }
   };
@@ -83,6 +84,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const response = await api.post("/api/token/", { email, password });
       localStorage.setItem(ACCESS_TOKEN, response.data.access);
       localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+      setIsAuthorized(true);
     } catch (err: any) {
       // Capture errors sent by DRF
       const errorMessage = err.response?.data?.detail || "Invalid login credentials";
@@ -98,6 +100,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // localStorage.removeItem("refresh_token");
     // setToken(null);
     setUser(null);
+    setIsAuthorized(false);
   };
 
   const value = {

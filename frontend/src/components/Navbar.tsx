@@ -27,7 +27,7 @@ const Navbar = () => {
   }, []);
 
   console.log("User is authenticated:", user);
-  console.log("Is Authorized:", isAuthorized)
+  console.log("Is Authorized:", isAuthorized);
 
   return (
     <>
@@ -57,11 +57,13 @@ const Navbar = () => {
               />
             </a>
           ))}
-          <button
-            className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${isScrolled ? "text-black" : "text-white"} transition-all`}
-          >
-            Dashboard
-          </button>
+          {isAuthorized && (
+            <button
+              className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${isScrolled ? "text-black" : "text-white"} transition-all`}
+            >
+              Dashboard
+            </button>
+          )}
         </div>
 
         {/* Desktop Right */}
@@ -72,21 +74,21 @@ const Navbar = () => {
             className={`${isScrolled && "invert"} h-7 transition-all duration-500`}
           />
 
-          { isAuthorized ?
-          (<button
-            onClick={() => setIsLoginModalOpen(true)} // Open the login modal on click
-            className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
-          >
-            Profile
-          </button>)
-          :
-          (<button
-            onClick={() => setIsLoginModalOpen(true)} // Open the login modal on click
-            className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
-          >
-            Login
-          </button>)
-          }
+          {isAuthorized ? (
+            <button
+              onClick={() => setIsLoginModalOpen(true)} // Open the login modal on click
+              className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
+            >
+              Profile
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsLoginModalOpen(true)} // Open the login modal on click
+              className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
+            >
+              Login
+            </button>
+          )}
 
           <button
             onClick={logout} // Open the login modal on click
@@ -94,8 +96,6 @@ const Navbar = () => {
           >
             Logout
           </button>
-
-
         </div>
 
         {/* Mobile Menu Button */}
@@ -132,7 +132,7 @@ const Navbar = () => {
           <button
             onClick={() => {
               setIsMenuOpen(false); // Close mobile drawer
-              setIsLoginOpen(true); // Open login modal
+              setIsLoginModalOpen(true); // Open login modal
             }}
             className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500"
           >
@@ -142,7 +142,10 @@ const Navbar = () => {
       </nav>
 
       {/* Render LoginModal */}
-      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </>
   );
 };
