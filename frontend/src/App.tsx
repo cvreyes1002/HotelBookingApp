@@ -2,7 +2,7 @@ import Navbar from "./components/Navbar";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import { AuthProvider } from "./components/AuthContext";
+import { AuthProvider } from "./components/AuthProvider";
 
 const Logout = () => {
   localStorage.clear();
@@ -16,13 +16,13 @@ const App = () => {
     <div>
       <AuthProvider>
         {!isOwnerPath && <Navbar />}
-      <div className="min-h-[70vh]">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
+        <div className="min-h-[70vh]">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </AuthProvider>
     </div>
   );

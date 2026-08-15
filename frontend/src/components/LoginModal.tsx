@@ -1,8 +1,8 @@
 import { useState } from "react";
-import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
 import LoadingIndicator from "./LoadingIndicator";
+import { useAuth } from "./AuthProvider";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -12,35 +12,33 @@ interface LoginModalProps {
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   if (!isOpen) return null;  // If the modal isn't open, render nothing
 
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
-  const handleSubmit = async (e) => {
-    setLoading(true);
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
+    setLoading(true);
+    setErrorMessage(null)
 
-    console.log("Email:", email);
-    console.log("Password:", password);
+    const target = e.currentTarget;
+    const email = (target.elements.namedItem("email") as HTMLInputElement).value;
+    const password = (target.elements.namedItem("password") as HTMLInputElement).value;
+
+    // const email = e.target.email.value;
+    // const password = e.target.password.value;
 
     try {
-      const response = await api.post("/api/token/", { email, password });
-      
-      console.log("Login successful:", response.data);
-
-      localStorage.setItem(ACCESS_TOKEN, response.data.access);
-      localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+      await login(email, password);
       onClose();  // Close the modal after successful login
-
-    } catch (error) {
-      console.error("Error during login:", error);
-      // Handle login error (e.g., show error message)
-
+    } catch (err: any) {
+      setErrorMessage(err.message || "Login failed"); // Captures the error thrown by AuthProvider
+      console.log(errorMessage)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }
-
+  }  
+  
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-100">
       <form onSubmit={handleSubmit} className="relative bg-white text-gray-500 max-w-87.5 w-full mx-4 md:p-6 p-4 text-left text-sm rounded-xl shadow-[0px_0px_10px_0px] shadow-black/10">

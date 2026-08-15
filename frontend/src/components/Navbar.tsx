@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 import LoginModal from "./LoginModal";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "./AuthProvider";
 
 const Navbar = () => {
+  const { user, isAuthorized, logout } = useAuth();
+
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Hotels", path: "/rooms" },
@@ -14,9 +16,7 @@ const Navbar = () => {
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoginOpen, setIsLoginOpen] = useState(false); // State to manage the login modal visibility
-
-  const { user } = useAuth();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // State to manage the login modal visibility
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,7 +26,8 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // console.log("User is authenticated:", !!user);
+  console.log("User is authenticated:", user);
+  console.log("Is Authorized:", isAuthorized)
 
   return (
     <>
@@ -71,21 +72,30 @@ const Navbar = () => {
             className={`${isScrolled && "invert"} h-7 transition-all duration-500`}
           />
 
-          { !!user ?
+          { isAuthorized ?
           (<button
-            onClick={() => setIsLoginOpen(true)} // Open the login modal on click
+            onClick={() => setIsLoginModalOpen(true)} // Open the login modal on click
             className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
           >
             Profile
           </button>)
           :
           (<button
-            onClick={() => setIsLoginOpen(true)} // Open the login modal on click
+            onClick={() => setIsLoginModalOpen(true)} // Open the login modal on click
             className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
           >
             Login
           </button>)
           }
+
+          <button
+            onClick={logout} // Open the login modal on click
+            className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
+          >
+            Logout
+          </button>
+
+
         </div>
 
         {/* Mobile Menu Button */}
@@ -132,7 +142,7 @@ const Navbar = () => {
       </nav>
 
       {/* Render LoginModal */}
-      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </>
   );
 };
