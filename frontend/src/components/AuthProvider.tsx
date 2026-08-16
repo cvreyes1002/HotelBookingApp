@@ -28,7 +28,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
  
   useEffect(() => {
     auth().catch(() => setIsAuthorized(false))
