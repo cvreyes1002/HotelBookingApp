@@ -137,8 +137,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
+# 1. The URL prefix used to access static files in the browser
 STATIC_URL = 'static/'
 
+# 2. Additional project-level directories where Django looks for static assets during development
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+# 3. The absolute path to the directory where all static files will be collected for production
+# Do NOT put your development assets directly into this folder!
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
