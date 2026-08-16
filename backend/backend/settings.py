@@ -155,6 +155,9 @@ STATICFILES_DIRS = [
 # Do NOT put your development assets directly into this folder!
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+MEDIA_URL = '/uploads/'
+MEDIA_ROOT = BASE_DIR / 'uploads'
+
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
