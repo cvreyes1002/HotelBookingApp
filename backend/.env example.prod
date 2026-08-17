@@ -1,0 +1,4 @@
+DJANGO_ENV=production
+DJANGO_SECRET_KEY='key-here'
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=ip-address,domain.com
