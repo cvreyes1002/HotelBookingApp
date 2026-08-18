@@ -19,15 +19,20 @@ const Navbar = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // State to manage the login modal visibility
 
   useEffect(() => {
+    if(location.pathname !== "/") {
+      setIsScrolled(true);
+      return;
+    } else {
+      setIsScrolled(false);
+    }
+    setIsScrolled(prev => location.pathname !== "/" ? true : prev);
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  console.log("User is authenticated:", user);
-  console.log("Is Authorized:", isAuthorized);
 
   return (
     <>
@@ -84,7 +89,7 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => setIsLoginModalOpen(true)} // Open the login modal on click
-              className={`px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
+              className={`cursor-pointer px-8 py-2.5 rounded-full ml-4 transition-all duration-500 ${isScrolled ? "text-white bg-black" : "bg-white text-black"}`}
             >
               Login
             </button>
