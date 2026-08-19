@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoadingIndicator from "./LoadingIndicator";
 import { useAuth } from "./AuthProvider";
 
@@ -8,9 +8,9 @@ interface LoginModalProps {
 }
 
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [, setErrorMessage] = useState<string | null>(null);
   const [state, setState] = useState("login");
 
   const [formData, setFormData] = useState({
@@ -19,6 +19,20 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     email: "",
     password: "",
   });
+
+  // Reset modal state back to "login" whenever the modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setState("login");
+      setErrorMessage(null);
+      setFormData({
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+      });
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null; // If the modal isn't open, render nothing
 
@@ -32,6 +46,16 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     // const password = (target.elements.namedItem("password") as HTMLInputElement).value;
 
     if (state === "register") {
+      try {
+        await register(formData.first_name, formData.last_name, formData.email, formData.password);
+        onClose();
+      } catch(err: any) {
+          const message = err.message || "Login failed";
+          setErrorMessage(message); // Captures the error thrown by AuthProvider
+          console.log(message);
+      } finally {
+        setLoading(false);
+      }
       console.log(formData.name)
       // const name = (target.elements.namedItem("email") as HTMLInputElement).value;
     } else {

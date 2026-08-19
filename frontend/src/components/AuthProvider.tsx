@@ -82,7 +82,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const register = async (first_name: string, last_name: string, email: string, password: string) => {
     try {
-      const response = await api.post("/api/register/", { first_name, last_name, email, password });
+      // const response = await api.post("/api/register/", { first_name, last_name, email, password });
+      await api.post("/api/register/", { first_name, last_name, email, password });
     } catch (err: any) {
       // Capture errors sent by DRF
       const errorMessage = err.response?.data?.detail || "Invalid login credentials";
@@ -120,6 +121,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     isAuthorized,
     // token,
     // loading,
+    register,
     login,
     logout,
   };
