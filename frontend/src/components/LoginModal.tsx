@@ -13,11 +13,12 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [state, setState] = useState("login");
 
-  // const [formData, setFormData] = useState({
-  //   name: "",
-  //   email: "",
-  //   password: "",
-  // });
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  });
 
   if (!isOpen) return null; // If the modal isn't open, render nothing
 
@@ -26,15 +27,16 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     setLoading(true);
     setErrorMessage(null);
 
-    const target = e.currentTarget;
-    const email = (target.elements.namedItem("email") as HTMLInputElement).value;
-    const password = (target.elements.namedItem("password") as HTMLInputElement).value;
+    // const target = e.currentTarget;
+    // const email = (target.elements.namedItem("email") as HTMLInputElement).value;
+    // const password = (target.elements.namedItem("password") as HTMLInputElement).value;
 
     if (state === "register") {
-      const name = (target.elements.namedItem("email") as HTMLInputElement).value;
+      console.log(formData.name)
+      // const name = (target.elements.namedItem("email") as HTMLInputElement).value;
     } else {
         try {
-        await login(email, password);
+        await login(formData.email, formData.password);
         onClose(); // Close the modal after successful login
       } catch (err: any) {
         const message = err.message || "Login failed";
@@ -43,7 +45,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       } finally {
         setLoading(false);
       }
-    }
+   }
   };
    
   const handleChange = (e) => {
@@ -89,33 +91,61 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
         {loading && <LoadingIndicator />}
 
         {state !== "login" && (
-          <div className="flex items-center mt-6 w-full bg-gray-800 border border-gray-700 h-12 rounded-full overflow-hidden pl-6 gap-2 ">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              className="text-gray-400"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              {" "}
-              <circle cx="12" cy="8" r="5" />{" "}
-              <path d="M20 21a8 8 0 0 0-16 0" />{" "}
-            </svg>
-            <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              className="w-full bg-transparent text-white placeholder-gray-400 border-none outline-none "
-              // value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          <>
+            <div className="flex items-center mt-6 w-full bg-gray-800 border border-gray-700 h-12 rounded-full overflow-hidden pl-6 gap-2 ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                className="text-gray-400"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {" "}
+                <circle cx="12" cy="8" r="5" />{" "}
+                <path d="M20 21a8 8 0 0 0-16 0" />{" "}
+              </svg>
+              <input
+                type="text"
+                name="first_name"
+                placeholder="First Name"
+                className="w-full bg-transparent text-white placeholder-gray-400 border-none outline-none "
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="flex items-center mt-6 w-full bg-gray-800 border border-gray-700 h-12 rounded-full overflow-hidden pl-6 gap-2 ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                className="text-gray-400"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {" "}
+                <circle cx="12" cy="8" r="5" />{" "}
+                <path d="M20 21a8 8 0 0 0-16 0" />{" "}
+              </svg>
+              <input
+                type="text"
+                name="last_name"
+                placeholder="Last Name"
+                className="w-full bg-transparent text-white placeholder-gray-400 border-none outline-none "
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </>
         )}
 
         <div className="flex items-center w-full mt-4 bg-gray-800 border border-gray-700 h-12 rounded-full overflow-hidden pl-6 gap-2 ">

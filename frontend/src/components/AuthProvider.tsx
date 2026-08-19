@@ -20,6 +20,7 @@ interface AuthContextType {
   isAuthorized: boolean | null;
   // error: string | null; // Added to track server errors
   login: (email: string, password: string) => Promise<void>; // Accepts credentials now
+  register: (first_name: string, last_name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -78,7 +79,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsAuthorized(true)
     }
   };
-  
+
+  const register = async (first_name: string, last_name: string, email: string, password: string) => {
+    try {
+      const response = await api.post("/api/register/", { first_name, last_name, email, password });
+    } catch (err: any) {
+      // Capture errors sent by DRF
+      const errorMessage = err.response?.data?.detail || "Invalid login credentials";
+      setError(errorMessage);
+      throw new Error(errorMessage); // Pass error down to the form component
+    }
+  };
+
   const login = async (email: string, password: string) => {
     try {
       const response = await api.post("/api/token/", { email, password });
